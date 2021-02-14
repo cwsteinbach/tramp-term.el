@@ -41,6 +41,12 @@
 (require 'term)
 (require 'tramp)
 
+(defcustom tramp-term-buffer-name-format "*%s*"
+  "Format to use for naming new tramp-term buffers."
+  :group 'tramp-term
+  :type 'string)
+
+
 (defvar tramp-term-after-initialized-hook nil
   "Hook called after tramp has been initialized on the remote
   host.  Hooks should expect a single arg which contains the
@@ -138,7 +144,8 @@ as a list of strings"
 (defun tramp-term--create-term (new-buffer-name cmd &rest switches)
   "Create an ansi-term running an arbitrary command, including
 extra parameters."
-  (let ((new-buffer-name (generate-new-buffer-name (format "*%s*" new-buffer-name))))
+  (let ((new-buffer-name (generate-new-buffer-name
+                          (format tramp-term-buffer-name-format new-buffer-name))))
     (with-current-buffer (make-term new-buffer-name cmd nil (car switches))
       (rename-buffer new-buffer-name)   ; Undo the extra "*"s that
                                         ; make-term insists on adding
